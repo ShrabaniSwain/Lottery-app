@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:layout_marginVertical="15dp"
+    android:layout_marginEnd="15dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvLatestTicketDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="11 June 2023"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:textSize="11sp"
+            android:textColor="@color/purple"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/tvLatestPayTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toLeftOf="@id/tvLatestTicketTime"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="Play Time:"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="10dp"
+            android:textStyle="bold"
+            android:textSize="11sp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/tvLatestTicketTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="11:30 AM"
+            android:textStyle="bold"
+            android:layout_marginTop="9dp"
+            android:layout_marginEnd="10dp"
+            android:textSize="12sp"
+            android:textColor="@color/purple"/>
+
+        <TextView
+            android:id="@+id/tvLotteryName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lottery Name"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="10dp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            app:layout_constraintTop_toBottomOf="@id/tvLatestTicketDate"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/tvLotteryNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvLotteryName"
+            android:text="Lottery Number: "
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="10dp"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/tvLotteryBlurNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@id/tvLotteryNumber"
+            app:layout_constraintTop_toBottomOf="@id/tvLotteryName"
+            android:text="12345678"
+            android:layout_marginTop="5dp"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@color/purple"/>
+
+        <Button
+            android:id="@+id/btnViewDetails"
+            android:layout_width="130dp"
+            android:layout_height="36dp"
+            app:layout_constraintTop_toBottomOf="@id/tvLotteryNumber"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="10dp"
+            android:text="View Details"
+            android:textSize="12sp"
+            android:background="@drawable/rounded_button"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

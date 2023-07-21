@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="320dp"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:layout_marginVertical="15dp"
+    android:layout_marginEnd="15dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvTicketNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="#123456789"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="10dp"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvTicketAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toLeftOf="@id/tvPrize"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="1Cr."
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="#DD0A0A"/>
+
+            <TextView
+                android:id="@+id/tvPrize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:text="First Prize"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="11sp"
+                android:textColor="#DD0A0A"/>
+
+            <TextView
+                android:id="@+id/tvLotteryName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lottery Name"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                app:layout_constraintTop_toBottomOf="@id/tvTicketNo"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/tvSecondTicketAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintRight_toLeftOf="@id/tvSecondPrize"
+                app:layout_constraintTop_toBottomOf="@id/tvTicketAmount"
+                android:text="3lac."
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="8dp"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="@color/purple"/>
+
+            <TextView
+                android:id="@+id/tvSecondPrize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvPrize"
+                android:text="Second Prize"
+                android:textStyle="bold"
+                android:layout_marginTop="13dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="11sp"
+                android:textColor="@color/purple"/>
+
+            <TextView
+                android:id="@+id/tvLotteryNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvLotteryName"
+                android:text="Lottery Number: "
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="10dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/tvLotteryBlurNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/tvLotteryNumber"
+                app:layout_constraintTop_toBottomOf="@id/tvLotteryName"
+                android:text="12345678"
+                android:layout_marginTop="8dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
+
+            <ImageView
+                android:layout_width="50dp"
+                android:layout_height="35dp"
+                app:layout_constraintTop_toBottomOf="@id/tvSecondTicketAmount"
+                app:layout_constraintRight_toLeftOf="@id/tvLuckyWinner"
+                android:layout_marginTop="8dp"
+                android:src="@drawable/prize"/>
+
+            <TextView
+                android:id="@+id/tvLuckyWinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSecondPrize"
+                android:text="Lucky Winner"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/purple"/>
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvLotteryNumber"
+                android:text="11 June 2023"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/tvPlayTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/tvDate"
+                app:layout_constraintTop_toBottomOf="@id/tvLotteryNumber"
+                android:text="Play Time:"
+                android:layout_marginTop="20dp"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/purple"/>
+
+            <TextView
+                android:id="@+id/tvTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/tvPlayTime"
+                app:layout_constraintTop_toBottomOf="@id/tvLotteryNumber"
+                android:text="11:30 AM"
+                android:layout_marginTop="20dp"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:layout_marginLeft="5dp"
+                android:textColor="@color/black"/>
+
+            <Button
+                android:id="@+id/btnViewDetails"
+                android:layout_width="130dp"
+                android:layout_height="36dp"
+                app:layout_constraintTop_toBottomOf="@id/tvDate"
+                android:layout_marginTop="15dp"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="10dp"
+                android:text="View Details"
+                android:textSize="10sp"
+                android:background="@drawable/rounded_button"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:layout_marginBottom="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"/>
+
+            <TextView
+                android:id="@+id/btnBuyNow"
+                android:layout_width="130dp"
+                android:layout_height="35dp"
+                app:layout_constraintTop_toBottomOf="@id/tvDate"
+                android:layout_marginTop="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="10dp"
+                android:text="Buy Now"
+                android:gravity="center"
+                android:textColor="@color/purple"
+                android:background="@drawable/buynow_rounded_button"
+                android:textSize="11sp"
+                android:textAllCaps="false"
+                android:textStyle="bold"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

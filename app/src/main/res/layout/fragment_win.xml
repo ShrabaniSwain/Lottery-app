@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_color"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".WinFragment">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/firstWinner"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="4dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardBackgroundColor="#7C0B0B"
+        android:layout_margin="20dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tvOne"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:gravity="center"
+            android:textSize="70sp"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvWinner1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Winner!!!"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:textColor="@color/yellow"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvOne"
+                android:layout_marginStart="90dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvFirstAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2 Cr."
+                android:textSize="30sp"
+                android:gravity="center"
+                android:textColor="@color/yellow"
+                android:layout_marginLeft="10dp"
+                app:layout_constraintLeft_toRightOf="@id/tvWinner1"
+                app:layout_constraintTop_toBottomOf="@id/tvOne"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvFirstTicketNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="123456789"
+                android:textSize="25sp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@id/tvWinner1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textStyle="italic"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/secondWinner"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/purple"
+        android:layout_margin="20dp"
+        app:layout_constraintTop_toBottomOf="@id/firstWinner">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvSecond"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2"
+                android:gravity="center"
+                android:textSize="70sp"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvWinner2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Winner!!!"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:textColor="@color/yellow"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvSecond"
+                android:layout_marginStart="90dp"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvSecondAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2 Cr."
+                android:textSize="30sp"
+                android:gravity="center"
+                android:textColor="@color/yellow"
+                android:layout_marginLeft="10dp"
+                app:layout_constraintLeft_toRightOf="@id/tvWinner2"
+                app:layout_constraintTop_toBottomOf="@id/tvSecond"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvSecondTicketNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="123456789"
+                android:textSize="25sp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@id/tvWinner2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textStyle="italic"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/thirdWinner"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="#7C0B0B"
+        android:layout_margin="20dp"
+        app:layout_constraintTop_toBottomOf="@id/secondWinner">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvThird"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:gravity="center"
+                android:textSize="70sp"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/tvWinner3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lucky Winner!!!"
+                android:textSize="30sp"
+                android:gravity="center"
+                android:textColor="@color/yellow"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tvThird"
+                android:layout_marginStart="25dp"
+                android:textStyle="bold"/>
+
+            <ImageView
+                android:id="@+id/tvThirdAmount"
+                android:layout_width="80dp"
+                android:layout_height="50dp"
+                android:src="@drawable/prize"
+                android:gravity="center"
+                android:scaleType="centerCrop"
+                android:layout_marginLeft="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="55dp"
+                app:layout_constraintLeft_toRightOf="@id/tvWinner3"
+                app:layout_constraintTop_toBottomOf="@id/tvThird" />
+
+            <TextView
+                android:id="@+id/tvThirdTicketNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="123456789"
+                android:textSize="25sp"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toBottomOf="@id/tvWinner3"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:textStyle="italic"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

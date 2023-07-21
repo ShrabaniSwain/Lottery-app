@@ -1,0 +1,14 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_pressed="true">
+        <shape>
+            <solid android:color="@color/selcted_color" /> <!-- Set the desired pressed color -->
+            <corners android:radius="20dp" /> <!-- Adjust the radius value to control the roundness -->
+        </shape>
+    </item>
+    <item>
+        <shape>
+            <solid android:color="@color/selcted_color" /> <!-- Set the desired default color -->
+            <corners android:radius="20dp" /> <!-- Adjust the radius value to control the roundness -->
+        </shape>
+    </item>
+</selector>

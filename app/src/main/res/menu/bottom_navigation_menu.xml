@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_home"
+        android:icon="@drawable/baseline_home_24"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/action_my_ticket"
+        android:icon="@drawable/ic_my_ticket"
+        android:title="My Ticket" />
+
+    <item
+        android:id="@+id/action_win3"
+        android:icon="@drawable/win"
+        android:title="Win3" />
+
+    <item
+        android:id="@+id/action_history"
+        android:icon="@drawable/history"
+        android:title="History" />
+</menu>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText">
+
+    <item
+        android:id="@+id/nav_transaction_history"
+        android:title="Transaction History"
+        android:icon="@drawable/ic_transaction_history" />
+    <item
+        android:id="@+id/nav_recharge_wallet"
+        android:title="Recharge Wallet"
+        android:icon="@drawable/ic_recharge"/>
+    <item
+        android:id="@+id/nav_support"
+        android:title="Support"
+        android:icon="@drawable/ic_support"/>
+    <item
+        android:id="@+id/nav_about"
+        android:title="About Us"
+        android:icon="@drawable/ic_about"/>
+    <item
+        android:id="@+id/nav_contact"
+        android:title="Contact Us"
+        android:icon="@drawable/ic_contact"/>
+    <item
+        android:id="@+id/nav_terms_condition"
+        android:title="Terms and Condition"
+        android:icon="@drawable/ic_terms_condition"/>
+    <item
+        android:id="@+id/nav_privacy_policy"
+        android:title="Privacy Policy"
+        android:icon="@drawable/ic_privacy"/>
+    <item
+        android:id="@+id/nav_refund_policy"
+        android:title="Refund Policy"
+        android:icon="@drawable/ic_refund"/>
+</menu>
