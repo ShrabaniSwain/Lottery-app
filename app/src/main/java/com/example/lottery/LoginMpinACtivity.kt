@@ -6,8 +6,12 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.UnderlineSpan
+import android.widget.Toast
 import com.example.lottery.databinding.ActivityLoginMpinBinding
 import com.example.lottery.databinding.ActivitySignUpBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class LoginMpinACtivity : AppCompatActivity() {
 
@@ -18,7 +22,7 @@ class LoginMpinACtivity : AppCompatActivity() {
         binding = ActivityLoginMpinBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val text = "Login By OTP"
+        val text = "SIgn In By OTP"
         val spannableString = SpannableString(text)
         spannableString.setSpan(UnderlineSpan(), 0, text.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
@@ -33,8 +37,8 @@ class LoginMpinACtivity : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            val mipn = binding.etEnterMpin.text.toString()
+            loginUser(mipn)
         }
 
         binding.tvNewUser.setOnClickListener {
@@ -49,5 +53,43 @@ class LoginMpinACtivity : AppCompatActivity() {
         binding.ivBack.setOnClickListener {
             onBackPressed()
         }
+    }
+
+    private fun loginUser(mipn: String) {
+        val loginApiService = RetrofitClient.retrofit.create(LotteryAPI::class.java)
+        val loginData = LoginData(mipn)
+        val call = loginApiService.logIn(loginData)
+
+        call.enqueue(object : Callback<LoginMPINResponse> {
+            override fun onResponse(call: Call<LoginMPINResponse>, response: Response<LoginMPINResponse>) {
+                if (response.isSuccessful) {
+                    val apiResponse = response.body()
+                    apiResponse?.let {
+                        if (it.isSuccess) {
+                            // User has logged in successfully, set login status to true
+                            val sharedPrefHelper = SharedPreferenceHelper(this@LoginMpinACtivity)
+                            sharedPrefHelper.setLoggedIn(true)
+
+                            val intent = Intent(this@LoginMpinACtivity, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        } else {
+                            showToast("Login Failed: ${it.message}")
+                        }
+                    }
+                } else {
+                    showToast("Login Failed: ${response.message()}")
+                }
+            }
+
+            override fun onFailure(call: Call<LoginMPINResponse>, t: Throwable) {
+                showToast("Login Failed: ${t.message}")
+            }
+        })
+    }
+
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

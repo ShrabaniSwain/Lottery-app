@@ -3,11 +3,13 @@ package com.example.lottery
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.example.lottery.databinding.ActivityMainBinding
 import com.example.lottery.databinding.HeaderLayoutBinding
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +25,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        fetchWalletBalance()
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -62,6 +66,25 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_recharge_wallet -> {
                     Toast.makeText(this, "Wallet", Toast.LENGTH_LONG).show()
                 }
+                R.id.nav_about -> {
+                    val intent = Intent(this, AboutUsActivity::class.java)
+                    startActivity(intent)
+                }
+
+                R.id.nav_contact -> {
+                    val intent = Intent(this, ContactUsActivity::class.java)
+                    startActivity(intent)
+                }
+
+                R.id.nav_terms_condition -> {
+                    val intent = Intent(this, TermsAndCondition::class.java)
+                    startActivity(intent)
+                }
+
+                R.id.nav_privacy_policy -> {
+                    val intent = Intent(this, PrivacyPolicyActivity::class.java)
+                    startActivity(intent)
+                }
             }
 
             true
@@ -78,6 +101,32 @@ class MainActivity : AppCompatActivity() {
             binding.drawerLayout.openDrawer(GravityCompat.START)
         }
     }
+
+    @OptIn(DelicateCoroutinesApi::class)
+    private fun fetchWalletBalance(){
+        GlobalScope.launch(Dispatchers.Main) {
+            val response = withContext(Dispatchers.IO) {
+                RetrofitClient.api.getWalletBalance()
+            }
+
+            if (response.isSuccessful) {
+                val aboutResponse = response.body()
+                aboutResponse?.let { handleWalletBalanceResponse(it.result) }
+            } else {
+                Log.i("TAG", "API Call failed with error code: ${response.code()}")
+            }
+        }
+    }
+
+    private fun handleWalletBalanceResponse(result: List<WalletModel>) {
+        if (result.isNotEmpty()) {
+            val aboutPage = result[0]
+            val walletBalance = aboutPage.wallet_balance ?: "0"
+            val formattedWalletBalance = "Rs. $walletBalance"
+            binding.toolbar.tvWalletBalance.text = formattedWalletBalance
+        }
+    }
+
 
     private fun replaceFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction()

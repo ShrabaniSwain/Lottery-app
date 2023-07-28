@@ -3,13 +3,15 @@ package com.example.lottery
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import com.example.lottery.databinding.ItemBannerBinding
+import com.squareup.picasso.Picasso
 
-class HomeBannerAdapter(private val bannerImages: List<Int>) : PagerAdapter() {
+class HomeBannerAdapter(private val banners: List<HomeBannerModel>) : PagerAdapter() {
 
     override fun getCount(): Int {
-        return bannerImages.size
+        return banners.size
     }
 
     override fun isViewFromObject(view: View, obj: Any): Boolean {
@@ -20,9 +22,8 @@ class HomeBannerAdapter(private val bannerImages: List<Int>) : PagerAdapter() {
         val binding = ItemBannerBinding.inflate(LayoutInflater.from(container.context), container, false)
         val view = binding.root
 
-        // Set the banner image for the current position
-        binding.bannerImageView.setImageResource(bannerImages[position])
-
+        // Load the banner image for the current position from the URL using Picasso
+        Picasso.get().load(banners[position].banner_image).into(binding.bannerImageView)
         container.addView(view)
         return view
     }

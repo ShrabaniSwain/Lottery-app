@@ -2,12 +2,15 @@ package com.example.lottery
 
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lottery.databinding.FragmentHomeBinding
+import kotlinx.coroutines.*
+import java.lang.Runnable
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -20,28 +23,23 @@ class HomeFragment : Fragment() {
         R.drawable.bannerimage
     )
 
-    private lateinit var timer: Timer
+    private var timer: Timer? = null
     private var currentPage = 0
     private val DELAY_MS: Long = 2000
     private val PERIOD_MS: Long = 2000
     val adapter = TicketCardSlideAdapter()
-    val firstwinnerTicketNoAdapter = FirstwinnerTicketNoAdapter()
-    val secondWinnerAdapter = SecondWinnerAdapter()
+    private val firstwinnerTicketNoAdapter = FirstwinnerTicketNoAdapter()
+    private val secondWinnerAdapter = SecondWinnerAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-        val homeBannerAdapter = HomeBannerAdapter(bannerImages)
-        binding.viewPager.adapter = homeBannerAdapter
-
-        startAutoSlide()
-
         return binding.root
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -53,8 +51,46 @@ class HomeFragment : Fragment() {
 
         binding.rvSecondWinnerTicket.adapter = secondWinnerAdapter
         binding.rvSecondWinnerTicket.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-//        startAutoSlider()
+
+        GlobalScope.launch(Dispatchers.Main) {
+            val response = withContext(Dispatchers.IO) {
+                RetrofitClient.api.getBanners()
+            }
+
+            if (response.isSuccessful) {
+                val bannerResponse = response.body()
+                bannerResponse?.let { handleBannerResponse(it.result) }
+            } else {
+                Log.i("TAG", "API Call failed with error code: ${response.code()}")
+            }
+        }
+        GlobalScope.launch(Dispatchers.Main) {
+            val response = withContext(Dispatchers.IO) {
+                RetrofitClient.api.getNoticeDetails()
+            }
+
+            if (response.isSuccessful) {
+                val aboutResponse = response.body()
+                aboutResponse?.let { handleNoticeResponse(it.result) }
+            } else {
+                Log.i("TAG", "API Call failed with error code: ${response.code()}")
+            }
+        }
     }
+
+    private fun handleNoticeResponse(result: List<NoticeModel>) {
+        if (result.isNotEmpty()) {
+            val aboutPage = result[0]
+            binding.tvNoticeDetails.text = aboutPage.notice_details
+        }
+    }
+
+    private fun handleBannerResponse(banners: List<HomeBannerModel>) {
+        val homeBannerAdapter = HomeBannerAdapter(banners)
+        binding.viewPager.adapter = homeBannerAdapter
+        startAutoSlide()
+    }
+
     private fun startAutoSlide() {
         val handler = Handler()
         val update = Runnable {
@@ -65,30 +101,15 @@ class HomeFragment : Fragment() {
         }
 
         timer = Timer()
-        timer.schedule(object : TimerTask() {
+        timer!!.schedule(object : TimerTask() {
             override fun run() {
                 handler.post(update)
             }
         }, DELAY_MS, PERIOD_MS)
     }
-//
-//    private fun startAutoSlider() {
-//        timer = Timer()
-//
-//        timer.schedule(object : TimerTask() {
-//            override fun run() {
-//                requireActivity().runOnUiThread {
-//                    val nextPage = (currentPage + 1) % adapter.itemCount
-//
-//                    binding.recyclerView.smoothScrollToPosition(nextPage)
-//                    currentPage = nextPage
-//                }
-//            }
-//        }, 3000, 3000)
-//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        timer.cancel()
+        timer?.cancel()
     }
 }
