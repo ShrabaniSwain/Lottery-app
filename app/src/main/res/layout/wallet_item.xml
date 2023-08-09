@@ -33,38 +33,27 @@
             android:textColor="@color/black"
             android:textSize="15sp"
             app:layout_constraintTop_toBottomOf="@id/tvWalletDate"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="10dp"
-            app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="10dp"
             android:layout_marginTop="8dp"/>
 
         <TextView
-            android:id="@+id/tvLotteryCount"
+            android:id="@+id/tvPurpose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="5"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="15sp"
-            app:layout_constraintTop_toBottomOf="@id/tvWalletDate"
+            app:layout_constraintTop_toBottomOf="@id/tvLotterySaleMethod"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="10dp"
-            app:layout_constraintLeft_toRightOf="@id/tvLotterySaleMethod"
-            android:layout_marginLeft="10dp"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="10dp"
             android:layout_marginTop="8dp"/>
-
-        <TextView
-            android:id="@+id/tvAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="15dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginEnd="20dp"
-            android:text="Cr."
-            android:textColor="@color/purple"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/tvTicketAmount"
@@ -73,9 +62,9 @@
             android:text="Rs.5000"
             android:textStyle="bold"
             android:textColor="@color/black"
-            app:layout_constraintRight_toLeftOf="@id/tvAmount"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginRight="10dp"
+            android:layout_marginEnd="15dp"
             android:layout_marginTop="25dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

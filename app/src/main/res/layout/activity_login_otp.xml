@@ -68,6 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="25dp"
         android:textStyle="bold"
+        android:maxLength="4"
         android:textSize="16sp"
         android:hint="Enter 4 Digit OTP"
         android:padding="12dp"

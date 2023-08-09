@@ -8,12 +8,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lottery.databinding.NotificationItemLayoutBinding
 
-class NotificationAdapter() : RecyclerView.Adapter<NotificationAdapter.CardViewHolder>() {
-
-    private val dummyData = arrayListOf(
-        "Notification 1",
-        "Notification 2",
-        "Notification 3","Notification 4","Notification 5")
+class NotificationAdapter(private val notificationData: List<NotificationData>) : RecyclerView.Adapter<NotificationAdapter.CardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.notification_item_layout, parent, false)
@@ -21,25 +16,28 @@ class NotificationAdapter() : RecyclerView.Adapter<NotificationAdapter.CardViewH
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        val item = dummyData[position]
+        val item = notificationData[position]
         holder.bind(item)
     }
 
     override fun getItemCount(): Int {
-        return dummyData.size
+        return notificationData.size
     }
 
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = NotificationItemLayoutBinding.bind(itemView)
 
-        fun bind(item: String) {
-            binding.tvNotificationTitle.text = item
+        fun bind(item: NotificationData) {
+            binding.tvNotificationTitle.text = item.notification_name
+            binding.tvNotification.text = item.notification_details
 
             binding.notificationCardview.setOnClickListener {
-                val intent = Intent(binding.root.context, NotificationDetailsActivity::class.java)
+                val intent = Intent(binding.root.context, NotificationDetailsActivity::class.java).apply {
+                    putExtra("notification_name", item.notification_name)
+                    putExtra("notification_details", item.notification_details)
+                }
                 binding.root.context.startActivity(intent)
             }
-
         }
     }
 }

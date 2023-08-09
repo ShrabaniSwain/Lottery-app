@@ -5,19 +5,21 @@ import android.os.Bundle
 import android.util.Log
 import com.example.lottery.databinding.ActivityAboutUsBinding
 import com.example.lottery.databinding.ActivityTermsAndConditionBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class TermsAndCondition : AppCompatActivity() {
 
     private lateinit var binding: ActivityTermsAndConditionBinding
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityTermsAndConditionBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.ivBack.setOnClickListener {
+            onBackPressed()
+        }
 
         GlobalScope.launch(Dispatchers.Main) {
             val response = withContext(Dispatchers.IO) {

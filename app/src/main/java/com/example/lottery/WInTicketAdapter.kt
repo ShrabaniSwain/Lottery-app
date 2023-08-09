@@ -1,35 +1,40 @@
 package com.example.lottery
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.lottery.databinding.FirstWinnerTicketnoBinding
 import com.example.lottery.databinding.WinTicketCardBinding
 
-class WInTicketAdapter(private val imageUrlList: List<String>) :
-    RecyclerView.Adapter<WInTicketAdapter.ImageViewHolder>() {
+class WInTicketAdapter(private val lotteryResult: List<LotteryResult>) : RecyclerView.Adapter<WInTicketAdapter.CardViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
-        val binding = WinTicketCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding)
+    private val firstPrizeNumbers =
+        lotteryResult.filter { it.prize_position == "1st" }.map { it.lottery_number }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.win_ticket_card, parent, false)
+        return CardViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val imageUrl = imageUrlList[position]
-        Glide.with(holder.itemView)
-            .load(imageUrl)
-            .into(holder.imageView)
+    override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
+        val item = lotteryResult[position]
+        holder.bind(item)
     }
-
 
     override fun getItemCount(): Int {
-        return imageUrlList.size
+        return firstPrizeNumbers.size
     }
 
-    class ImageViewHolder(private val binding: WinTicketCardBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val binding = FirstWinnerTicketnoBinding.bind(itemView)
 
-        val imageView: ImageView = binding.ivWinTicket
+        fun bind(item: LotteryResult) {
+            val firstPrizeNumber = firstPrizeNumbers[adapterPosition]
+            binding.tvFirstWinnerNo.text = firstPrizeNumber
+        }
     }
 }

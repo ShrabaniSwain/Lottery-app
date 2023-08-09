@@ -20,9 +20,9 @@
         <ImageView
             android:id="@+id/profileImageView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="110dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/bannerimage" />
+            android:src="@drawable/profile" />
 
     </androidx.cardview.widget.CardView>
 

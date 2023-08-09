@@ -6,32 +6,32 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lottery.databinding.FirstWinnerTicketnoBinding
 
-class FirstwinnerTicketNoAdapter() : RecyclerView.Adapter<FirstwinnerTicketNoAdapter.CardViewHolder>() {
+class FirstwinnerTicketNoAdapter(private val lotteryResult: List<LotteryResult>) : RecyclerView.Adapter<FirstwinnerTicketNoAdapter.CardViewHolder>() {
 
-    private val dummyData = arrayListOf(
-        "12345678",
-        "12345678",
-        "12345678","12345678","12345678")
+    private val firstPrizeNumbers =
+        lotteryResult.filter { it.prize_position == "1st" }.map { it.lottery_number }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.first_winner_ticketno, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.first_winner_ticketno, parent, false)
         return CardViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        val item = dummyData[position]
+        val item = lotteryResult[position]
         holder.bind(item)
     }
 
     override fun getItemCount(): Int {
-        return dummyData.size
+        return firstPrizeNumbers.size
     }
 
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = FirstWinnerTicketnoBinding.bind(itemView)
 
-        fun bind(item: String) {
-            binding.tvFirstWinnerNo.text = item
+        fun bind(item: LotteryResult) {
+            val secondPrizeNumber = firstPrizeNumbers[adapterPosition]
+            binding.tvFirstWinnerNo.text = secondPrizeNumber
         }
     }
 }

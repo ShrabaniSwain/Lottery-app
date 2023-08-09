@@ -90,7 +90,7 @@
         <TextView
             android:id="@+id/tvDatePicker"
             android:layout_width="wrap_content"
-            android:layout_height="29dp"
+            android:layout_height="31dp"
             android:background="@drawable/rounded_border_button"
             android:text="6 jun 2023"
             android:textColor="@color/purple"
@@ -110,7 +110,7 @@
       <TextView
           android:id="@+id/tvTimePicker"
           android:layout_width="wrap_content"
-          android:layout_height="29dp"
+          android:layout_height="31dp"
           android:background="@drawable/rounded_border_button"
           android:text="10:30 PM"
           android:textColor="@color/purple"
@@ -158,25 +158,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2"
-                android:textSize="40sp"
+                android:textSize="25sp"
                 android:textColor="@color/yellow"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="10dp"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintLeft_toRightOf="@id/tvOne"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tvFirstPrizePrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Cr."
-                android:textSize="20sp"
-                android:textColor="@color/yellow"
-                android:layout_marginLeft="5dp"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="27dp"
-                app:layout_constraintLeft_toRightOf="@id/tvFirstPrizeAmount"
                 android:textStyle="bold"/>
 
             <TextView
@@ -186,10 +173,10 @@
                 android:text="First Price Winners"
                 android:textSize="20sp"
                 android:textColor="@color/white"
-                app:layout_constraintLeft_toRightOf="@id/tvFirstPrizePrice"
+                app:layout_constraintLeft_toRightOf="@id/tvFirstPrizeAmount"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="28dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="23dp"
                 android:textStyle="bold"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -237,25 +224,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="5"
-                android:textSize="40sp"
+                android:textSize="25sp"
                 android:textColor="@color/yellow"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="10dp"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="20dp"
                 app:layout_constraintLeft_toRightOf="@id/tvSecond"
-                android:textStyle="bold"/>
-
-            <TextView
-                android:id="@+id/tvSecondPrizePrice"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Lac."
-                android:textSize="20sp"
-                android:textColor="@color/yellow"
-                android:layout_marginLeft="5dp"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="27dp"
-                app:layout_constraintLeft_toRightOf="@id/tvSecondPrizeAmount"
                 android:textStyle="bold"/>
 
             <TextView
@@ -265,10 +239,10 @@
                 android:text="Second Price Winners"
                 android:textSize="20sp"
                 android:textColor="@color/white"
-                app:layout_constraintLeft_toRightOf="@id/tvSecondPrizePrice"
+                app:layout_constraintLeft_toRightOf="@id/tvSecondPrizeAmount"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="28dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="23dp"
                 android:textStyle="bold"/>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -289,7 +263,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/thirdPriceCard"
         android:layout_width="match_parent"
-        android:layout_height="125dp"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="5dp"
         app:cardElevation="4dp"
         app:cardBackgroundColor="@color/selcted_color"
@@ -305,26 +279,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lucky Winner"
-                android:textSize="20sp"
+                android:textSize="30sp"
                 android:textColor="@color/purple"
                 android:textStyle="bold"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="25dp"
+                android:layout_marginTop="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/tvLuckyWinnerTicketNO"
+                android:id="@+id/tvLuckyWinnerTextPrize"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="12345678"
-                android:textSize="18sp"
-                android:textColor="@color/white"
+                android:text="10000"
+                android:textSize="27sp"
+                android:textColor="#971010"
                 android:textStyle="bold"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="5dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvLuckyWinner"/>
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <ImageView
                 android:id="@+id/tvLuckyWinnerPrize"
@@ -333,9 +307,22 @@
                 android:src="@drawable/prize"
                 android:scaleType="centerCrop"
                 android:layout_marginEnd="15dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginTop="6dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvLuckyWinnerTicket"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintTop_toBottomOf="@id/tvLuckyWinner"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginHorizontal="15dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
@@ -347,57 +334,16 @@
         android:background="@color/white"
         android:layout_marginTop="20dp"
         app:layout_constraintTop_toBottomOf="@id/thirdPriceCard">
-    <TextView
-        android:id="@+id/tvName1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="Name-1"
-        android:textColor="@color/red"
-        android:textStyle="bold"
-        android:textSize="17sp"
-        android:paddingTop="12dp"
-        android:layout_marginStart="15dp"/>
 
-    <TextView
-        android:id="@+id/tvName2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/tvName1"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="Name-2"
-        android:textColor="@color/purple"
-        android:textStyle="bold"
-        android:textSize="17sp"
-        android:paddingTop="12dp"
-        android:layout_marginLeft="35dp"/>
-
-    <TextView
-        android:id="@+id/tvName3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toRightOf="@id/tvName2"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="Name-3"
-        android:textColor="@color/purple"
-        android:textStyle="bold"
-        android:textSize="17sp"
-        android:paddingTop="12dp"
-        android:layout_marginLeft="35dp"/>
-
-    <TextView
-        android:id="@+id/tvName4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginEnd="15dp"
-        android:text="Name-4"
-        android:paddingTop="12dp"
-        android:textColor="@color/purple"
-        android:textStyle="bold"
-        android:textSize="17sp" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvOtherBrandName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -424,7 +370,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="10dp"
         android:lineSpacingExtra="1dp"
-        android:textSize="12sp"
+        android:textSize="15sp"
         android:layout_marginHorizontal="15dp"/>
 
     <ImageView

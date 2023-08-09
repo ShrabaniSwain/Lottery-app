@@ -24,6 +24,10 @@ class SIgnUpActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.ivBack.setOnClickListener {
+            onBackPressed()
+        }
+
         binding.btnSIgnUp.setOnClickListener {
 
             val customerName = binding.etName.text.toString().trim()

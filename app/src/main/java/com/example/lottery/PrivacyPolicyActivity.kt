@@ -5,18 +5,20 @@ import android.os.Bundle
 import android.util.Log
 import com.example.lottery.databinding.ActivityPrivacyPolicyBinding
 import com.example.lottery.databinding.ActivityTermsAndConditionBinding
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class PrivacyPolicyActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPrivacyPolicyBinding
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPrivacyPolicyBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.ivBack.setOnClickListener {
+            onBackPressed()
+        }
 
         GlobalScope.launch(Dispatchers.Main) {
             val response = withContext(Dispatchers.IO) {

@@ -7,13 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lottery.databinding.OldTicketCardBinding
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
-class OldTicketCardAdapter() : RecyclerView.Adapter<OldTicketCardAdapter.CardViewHolder>() {
-
-    private val dummyData = arrayListOf(
-        "12345678",
-        "12345678",
-        "12345678","12345678","12345678")
+class OldTicketCardAdapter(private val olderTicket: List<OlderTicketModel>) : RecyclerView.Adapter<OldTicketCardAdapter.CardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.old_ticket_card, parent, false)
@@ -21,19 +19,25 @@ class OldTicketCardAdapter() : RecyclerView.Adapter<OldTicketCardAdapter.CardVie
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        val item = dummyData[position]
+        val item = olderTicket[position]
         holder.bind(item)
     }
 
     override fun getItemCount(): Int {
-        return dummyData.size
+        return olderTicket.size
     }
 
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = OldTicketCardBinding.bind(itemView)
 
-        fun bind(item: String) {
-            binding.tvLotteryBlurNumber.text = item
+        fun bind(item: OlderTicketModel) {
+            binding.tvLotteryBlurNumber.text = item.lottery_number
+            binding.tvLotteryName.text = item.brand_name
+            binding.tvLatestTicketDate.text = item.play_date
+
+            val playTime = item.play_time
+            val convertedPlayTime = convertPlayTime(playTime)
+            binding.tvLatestTicketTime.text = convertedPlayTime
 
             binding.btnViewDetails.setOnClickListener { view ->
                 val context = view.context
@@ -59,6 +63,18 @@ class OldTicketCardAdapter() : RecyclerView.Adapter<OldTicketCardAdapter.CardVie
                 dialogOk.setOnClickListener { dialog.dismiss() }
 
             }
+        }
+
+        fun convertPlayTime(playTime: String): String {
+            val sdfInput = SimpleDateFormat("h a", Locale.getDefault())
+            val sdfOutput = SimpleDateFormat("h:mm a", Locale.getDefault())
+            try {
+                val date = sdfInput.parse(playTime)
+                return sdfOutput.format(date!!)
+            } catch (e: ParseException) {
+                e.printStackTrace()
+            }
+            return playTime // Return the original input in case of any error
         }
     }
 }

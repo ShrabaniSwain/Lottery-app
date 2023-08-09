@@ -6,12 +6,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lottery.databinding.SecondWinnerTicketnoBinding
 
-class SecondWinnerAdapter() : RecyclerView.Adapter<SecondWinnerAdapter.CardViewHolder>() {
+class SecondWinnerAdapter(private val lotteryResult: List<LotteryResult>) : RecyclerView.Adapter<SecondWinnerAdapter.CardViewHolder>() {
 
-    private val dummyData = arrayListOf(
-        "12345678",
-        "12345678",
-        "12345678","12345678","12345678")
+    private val secondPrizeNumbers =
+        lotteryResult.filter { it.prize_position == "2nd" }.map { it.lottery_number }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.second_winner_ticketno, parent, false)
@@ -19,19 +17,20 @@ class SecondWinnerAdapter() : RecyclerView.Adapter<SecondWinnerAdapter.CardViewH
     }
 
     override fun onBindViewHolder(holder: CardViewHolder, position: Int) {
-        val item = dummyData[position]
+        val item = secondPrizeNumbers[position]
         holder.bind(item)
     }
 
     override fun getItemCount(): Int {
-        return dummyData.size
+        return secondPrizeNumbers.size
     }
 
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = SecondWinnerTicketnoBinding.bind(itemView)
 
         fun bind(item: String) {
-            binding.tvSecondWinnerNo.text = item
+            val secondPrizeNumber = secondPrizeNumbers[adapterPosition]
+            binding.tvSecondWinnerNo.text = secondPrizeNumber
         }
     }
 }

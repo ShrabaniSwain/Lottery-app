@@ -13,6 +13,12 @@ class NotificationDetailsActivity : AppCompatActivity() {
         binding = ActivityNotificationDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val notificationName = intent.getStringExtra("notification_name")
+        val notificationDetails = intent.getStringExtra("notification_details")
+
+        binding.tvNotificationDetails.text = notificationDetails
+        binding.tvNotificationTitle.text = notificationName
+
         binding.ivBack.setOnClickListener {
             onBackPressed()
         }

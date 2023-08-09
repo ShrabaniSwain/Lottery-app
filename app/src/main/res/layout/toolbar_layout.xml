@@ -37,29 +37,7 @@
                 android:src="@drawable/ic_share"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="12dp"
-                app:layout_constraintRight_toLeftOf="@id/walletButton"/>
-
-            <ImageButton
-                android:id="@+id/walletButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_wallet"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="12dp"
                 app:layout_constraintRight_toLeftOf="@id/notificationButton"/>
-
-            <TextView
-                android:id="@+id/tvWalletBalance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@id/walletButton"
-                android:layout_marginTop="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginEnd="42dp"
-                android:text="Rs.500"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="@color/white"/>
 
             <ImageButton
                 android:id="@+id/notificationButton"
@@ -69,7 +47,30 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="12dp"
                 android:layout_marginEnd="5dp"
+                app:layout_constraintRight_toLeftOf="@id/walletButton"/>
+
+            <ImageButton
+                android:id="@+id/walletButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_wallet"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="12dp"
+                android:layout_marginEnd="15dp"
                 app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/tvWalletBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:text="Rs.0"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/walletButton"
+                app:layout_constraintStart_toEndOf="@+id/walletButton"
+                app:layout_constraintTop_toTopOf="@id/walletButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.appcompat.widget.Toolbar>

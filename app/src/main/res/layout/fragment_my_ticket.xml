@@ -36,12 +36,12 @@
 
         <TextView
             android:id="@+id/tvDatePicker"
-            android:layout_width="130dp"
+            android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:background="@drawable/rounded_border_button"
             android:text="6 jun 2023"
             android:textColor="@color/purple"
-            android:textSize="12sp"
+            android:textSize="11sp"
             android:textStyle="bold"
             android:gravity="center"
             android:layout_marginTop="10dp"
@@ -54,7 +54,7 @@
 
         <TextView
             android:id="@+id/tvTimePicker"
-            android:layout_width="130dp"
+            android:layout_width="100dp"
             android:layout_height="35dp"
             android:background="@drawable/rounded_border_button"
             android:text="All"

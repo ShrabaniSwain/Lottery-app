@@ -28,7 +28,7 @@
             android:id="@+id/tvTicketsCount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10 Tickets"
+            android:text="10"
             android:textStyle="bold"
             android:textColor="@color/black"
             android:textSize="15sp"
@@ -37,6 +37,21 @@
             android:layout_marginBottom="10dp"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="10dp"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tvNoOfTicketsCount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tickets"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            app:layout_constraintTop_toBottomOf="@id/tvTransactionDate"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintLeft_toRightOf="@id/tvTicketsCount"
+            android:layout_marginStart="5dp"
             android:layout_marginTop="8dp"/>
 
         <TextView

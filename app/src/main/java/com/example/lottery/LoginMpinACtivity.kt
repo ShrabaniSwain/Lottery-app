@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.UnderlineSpan
+import android.view.View
 import android.widget.Toast
+import com.example.lottery.Constants.REFER_URL
 import com.example.lottery.databinding.ActivityLoginMpinBinding
 import com.example.lottery.databinding.ActivitySignUpBinding
 import retrofit2.Call
@@ -28,8 +30,9 @@ class LoginMpinACtivity : AppCompatActivity() {
 
         binding.loginByOtp.text = spannableString
         binding.loginByOtp.setOnClickListener {
-            val intent = Intent(this, LoginOtpActivity::class.java)
+            val intent = Intent(this, CustomerLoginMobileNo::class.java)
             startActivity(intent)
+            finish()
         }
         binding.tvForgotMpin.setOnClickListener {
             val intent = Intent(this, MobileNumberActivity::class.java)
@@ -37,6 +40,7 @@ class LoginMpinACtivity : AppCompatActivity() {
         }
 
         binding.btnLogin.setOnClickListener {
+            binding.progressBar.visibility = View.VISIBLE
             val mipn = binding.etEnterMpin.text.toString()
             loginUser(mipn)
         }
@@ -67,13 +71,23 @@ class LoginMpinACtivity : AppCompatActivity() {
                     apiResponse?.let {
                         if (it.isSuccess) {
                             // User has logged in successfully, set login status to true
+                            binding.progressBar.visibility = View.GONE
                             val sharedPrefHelper = SharedPreferenceHelper(this@LoginMpinACtivity)
                             sharedPrefHelper.setLoggedIn(true)
+
+                            sharedPrefHelper.saveLoginData(
+                                it.cuctomer_id,
+                                it.customer_name,
+                                it.cuctomer_mobile_number,
+                                it.email_id,
+                                it.mipn
+                            )
 
                             val intent = Intent(this@LoginMpinACtivity, MainActivity::class.java)
                             startActivity(intent)
                             finish()
                         } else {
+                            binding.progressBar.visibility = View.GONE
                             showToast("Login Failed: ${it.message}")
                         }
                     }

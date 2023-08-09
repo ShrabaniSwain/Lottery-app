@@ -12,7 +12,7 @@
     <item
         android:id="@+id/action_win3"
         android:icon="@drawable/win"
-        android:title="Win3" />
+        android:title="Win" />
 
     <item
         android:id="@+id/action_history"

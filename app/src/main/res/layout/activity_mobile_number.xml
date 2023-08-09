@@ -60,6 +60,7 @@
         android:textSize="16sp"
         android:hint="Enter Phone Number"
         android:gravity="center"
+        android:maxLength="10"
         android:padding="10dp"
         android:textColor="@color/black"
         android:layout_marginHorizontal="30dp"

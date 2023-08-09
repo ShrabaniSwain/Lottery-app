@@ -1,12 +1,19 @@
 package com.example.lottery
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.example.lottery.databinding.ActivityMainBinding
 import com.example.lottery.databinding.HeaderLayoutBinding
 import kotlinx.coroutines.*
@@ -15,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var headerBinding: HeaderLayoutBinding
+
+    private var isLoggedOut = false
 
     private val homeFragment: Fragment = HomeFragment()
     private val ticketFragment: Fragment = MyTicketFragment()
@@ -26,7 +35,24 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        fetchWalletBalance()
+        if (!Utility.isNetworkAvailable(this)) {
+            Toast.makeText(this, "No internet connection. Please check your network settings.", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val sharedPrefHelper = SharedPreferenceHelper(this)
+        if (sharedPrefHelper.isLoggedIn()) {
+            Constants.customer_id = sharedPrefHelper.getCustomerId(this)
+            Constants.customer_name = sharedPrefHelper.getCustomerName(this)
+            Constants.customer_mobilenumber = sharedPrefHelper.getCustomerMobileNumber(this)
+            Constants.customer_EmialId = sharedPrefHelper.getCustomerEmailId(this)
+            Constants.customer_Mipn = sharedPrefHelper.getCustomerMpin(this)
+        }
+
+        if (!sharedPrefHelper.isLoggedIn()) {
+            clearSessionData()
+        }
+
+        fetchWalletBalance(Constants.customer_id)
 
         binding.bottomNavigation.setOnNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
@@ -48,23 +74,35 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.toolbar.shareButton.setOnClickListener {
+            share()
+        }
+
         // Set the initial fragment
         replaceFragment(homeFragment)
 
         binding.navView.setNavigationItemSelectedListener { menuItem ->
-            // set item as selected to persist highlight
+            for (i in 0 until binding.navView.menu.size()) {
+                val item = binding.navView.menu.getItem(i)
+                item.isChecked = false
+            }
             menuItem.isChecked = true
-            // close drawer when item is tapped
             binding.drawerLayout.closeDrawers()
 
             // Handle navigation view item clicks here.
             when (menuItem.itemId) {
 
                 R.id.nav_transaction_history -> {
-
+                    val intent = Intent(this, HistoryActivity::class.java)
+                    startActivity(intent)
+                }
+                R.id.nav_support -> {
+                    val intent = Intent(this, SupportActivity::class.java)
+                    startActivity(intent)
                 }
                 R.id.nav_recharge_wallet -> {
-                    Toast.makeText(this, "Wallet", Toast.LENGTH_LONG).show()
+                    val intent = Intent(this, UpiPaymentActivity::class.java)
+                    startActivity(intent)
                 }
                 R.id.nav_about -> {
                     val intent = Intent(this, AboutUsActivity::class.java)
@@ -85,12 +123,24 @@ class MainActivity : AppCompatActivity() {
                     val intent = Intent(this, PrivacyPolicyActivity::class.java)
                     startActivity(intent)
                 }
+
+                R.id.nav_refund_policy -> {
+                    val intent = Intent(this, RefundActivity::class.java)
+                    startActivity(intent)
+                }
+
+                R.id.nav_logout -> {
+                    showLogoutConfirmationDialog()
+                }
+
             }
 
             true
         }
 
         headerBinding = HeaderLayoutBinding.bind(binding.navView.getHeaderView(0))
+
+        headerBinding.tvProfileName.text = Constants.customer_name
 
         headerBinding.ivEdit.setOnClickListener {
             val intent = Intent(this, EditProfileActivity::class.java)
@@ -102,18 +152,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    private fun fetchWalletBalance(){
-        GlobalScope.launch(Dispatchers.Main) {
-            val response = withContext(Dispatchers.IO) {
-                RetrofitClient.api.getWalletBalance()
-            }
+    private fun fetchWalletBalance(customerId: String) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            try {
+                val response = withContext(Dispatchers.IO) {
+                    RetrofitClient.api.getWalletBalance(customerId)
+                }
 
-            if (response.isSuccessful) {
-                val aboutResponse = response.body()
-                aboutResponse?.let { handleWalletBalanceResponse(it.result) }
-            } else {
-                Log.i("TAG", "API Call failed with error code: ${response.code()}")
+                if (response.isSuccessful) {
+                    val aboutResponse = response.body()
+                    aboutResponse?.let { handleWalletBalanceResponse(it.result) }
+                } else {
+                    Log.i("TAG", "API Call failed with error code: ${response.code()}")
+                }
+            } catch (e: Exception) {
+                Log.e("TAG", "API Call failed with exception: ${e.message}")
             }
         }
     }
@@ -124,6 +177,7 @@ class MainActivity : AppCompatActivity() {
             val walletBalance = aboutPage.wallet_balance ?: "0"
             val formattedWalletBalance = "Rs. $walletBalance"
             binding.toolbar.tvWalletBalance.text = formattedWalletBalance
+            Constants.WalletBalance = walletBalance
         }
     }
 
@@ -132,5 +186,57 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.beginTransaction()
             .replace(R.id.container, fragment)
             .commit()
+    }
+    private fun showLogoutConfirmationDialog() {
+        val dialogView = LayoutInflater.from(this).inflate(R.layout.logout_dialog_box, null)
+        val dialogOk = dialogView.findViewById<TextView>(R.id.btnOk)
+        val dialogCancel = dialogView.findViewById<TextView>(R.id.btnCancel)
+
+        val alertDialog = AlertDialog.Builder(this)
+            .setView(dialogView)
+            .setCancelable(false)
+            .create()
+
+        dialogOk.setOnClickListener {
+            clearSessionData()
+            navigateToLoginScreen()
+            alertDialog.dismiss()
+
+            Toast.makeText(this, "Logged out successfully!", Toast.LENGTH_SHORT).show()
+        }
+
+        dialogCancel.setOnClickListener {
+            alertDialog.dismiss()
+        }
+
+        alertDialog.show()
+    }
+
+    private fun clearSessionData() {
+        val sharedPrefHelper = SharedPreferenceHelper(this)
+        sharedPrefHelper.clearSession()
+    }
+
+    private fun navigateToLoginScreen() {
+        isLoggedOut = true
+        val intent = Intent(this, LoginMpinACtivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        finish()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isLoggedOut) {
+            navigateToLoginScreen()
+        }
+    }
+
+
+    private fun share() {
+        val share = Intent(Intent.ACTION_SEND)
+        share.type = "text/plain"
+        share.putExtra(Intent.EXTRA_TEXT, "${resources?.getString(R.string.take_a_look_at_lakhpati)} ${Constants.REFER_URL}")
+        applicationContext.startActivity(Intent.createChooser(share, null).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 }
