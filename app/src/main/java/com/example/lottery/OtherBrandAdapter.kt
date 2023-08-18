@@ -4,6 +4,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.lottery.databinding.ItemBrandNameBinding
 
 class OtherBrandAdapter(
@@ -38,6 +40,11 @@ class OtherBrandAdapter(
                         if (position == selectedBrandIndex) R.color.red else R.color.purple
                     )
                 )
+
+                Glide.with(binding.ivBrandLogo.context)
+                    .load(buttonData.brand_logo)
+                    .apply(RequestOptions.placeholderOf(R.drawable.prize))
+                    .into(binding.ivBrandLogo)
                 root.setOnClickListener {
                     selectedBrandIndex = position // Update the selectedBrandIndex
                     notifyDataSetChanged() // Notify the adapter about the data change

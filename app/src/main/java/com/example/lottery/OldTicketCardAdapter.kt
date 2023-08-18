@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.lottery.databinding.OldTicketCardBinding
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -35,9 +37,49 @@ class OldTicketCardAdapter(private val olderTicket: List<OlderTicketModel>) : Re
             binding.tvLotteryName.text = item.brand_name
             binding.tvLatestTicketDate.text = item.play_date
 
+
             val playTime = item.play_time
             val convertedPlayTime = convertPlayTime(playTime)
             binding.tvLatestTicketTime.text = convertedPlayTime
+
+            if (item.is_prize_own == "0"){
+                binding.btnWIn.visibility = View.GONE
+                binding.tvWInAmount.visibility = View.GONE
+                binding.ivPrizeImage.visibility = View.GONE
+                binding.cardview.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.white))
+                binding.tvLatestTicketDate.setTextColor(ContextCompat.getColor(itemView.context, R.color.gray))
+                binding.tvLatestTicketTime.setTextColor(ContextCompat.getColor(itemView.context, R.color.gray))
+                binding.tvLotteryName.setTextColor(ContextCompat.getColor(itemView.context, R.color.black))
+                binding.tvLotteryNumber.setTextColor(ContextCompat.getColor(itemView.context, R.color.black))
+                binding.tvLotteryBlurNumber.setTextColor(ContextCompat.getColor(itemView.context, R.color.purple))
+                binding.btnViewDetails.setBackgroundResource(R.drawable.rounded_button)
+            }
+
+            else if(item.is_prize_own == "1") {
+                binding.cardview.setBackgroundColor(ContextCompat.getColor(itemView.context, R.color.purple))
+                binding.tvLatestTicketDate.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
+                binding.tvLatestTicketTime.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
+                binding.tvLotteryName.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
+                binding.tvLotteryNumber.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
+                binding.tvLotteryBlurNumber.setTextColor(ContextCompat.getColor(itemView.context, R.color.white))
+                binding.btnViewDetails.setBackgroundResource(R.drawable.rounded_red_button)
+                binding.btnWIn.visibility = View.VISIBLE
+
+                val amount = "₹" +" "+ item.prize
+                if (item.prize_type == "File"){
+                    binding.ivPrizeImage.visibility = View.VISIBLE
+                    Glide.with(binding.ivPrizeImage.context)
+                        .load(item.prize)
+                        .into(binding.ivPrizeImage)
+                }
+                else{
+                    binding.tvWInAmount.visibility = View.VISIBLE
+                    binding.ivPrizeImage.visibility = View.GONE
+                    binding.tvWInAmount.text = amount
+                }
+            }
+
+            binding.cardview.radius = itemView.context.resources.getDimension(R.dimen.dp_4)
 
             binding.btnViewDetails.setOnClickListener { view ->
                 val context = view.context

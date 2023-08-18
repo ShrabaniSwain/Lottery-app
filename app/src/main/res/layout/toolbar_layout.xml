@@ -46,7 +46,6 @@
                 android:src="@drawable/ic_notifications"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="12dp"
-                android:layout_marginEnd="5dp"
                 app:layout_constraintRight_toLeftOf="@id/walletButton"/>
 
             <ImageButton
@@ -56,7 +55,7 @@
                 android:src="@drawable/ic_wallet"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="12dp"
-                android:layout_marginEnd="15dp"
+                android:layout_marginEnd="40dp"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
             <TextView
@@ -65,11 +64,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:text="Rs.0"
-                android:textColor="@color/white"
-                android:textSize="14sp"
+                android:textColor="#CC94D67C"
+                android:textSize="12sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@id/walletButton"
-                app:layout_constraintStart_toEndOf="@+id/walletButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.485"
+                app:layout_constraintStart_toEndOf="@+id/notificationButton"
                 app:layout_constraintTop_toTopOf="@id/walletButton" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

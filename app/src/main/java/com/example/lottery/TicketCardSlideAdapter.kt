@@ -58,14 +58,12 @@ class TicketCardSlideAdapter(private val lotteryModel: List<AllLotteryModel>) : 
         @OptIn(DelicateCoroutinesApi::class)
         fun bind(item: AllLotteryModel) {
 
-            val lotteryId = item.lottery_id
-            binding.tvTicketNo.text = "Series no. $lotteryId"
             binding.tvLotteryName.text = item.brand_name
             binding.tvTime.text = item.play_time
             binding.tvPrice.text = item.lottery_price
 
             val lotteryPrice = item.lottery_price ?: "0"
-            val formattedPrice = "Rs. $lotteryPrice"
+            val formattedPrice = "₹ $lotteryPrice"
             binding.tvPrice.text = formattedPrice
 
             val currentDate = Date()
@@ -79,7 +77,7 @@ class TicketCardSlideAdapter(private val lotteryModel: List<AllLotteryModel>) : 
 
             if (item.lucky_winner_display_prize == "Text"){
                 binding.tvLuckyWinnerTextPrice.visibility = View.VISIBLE
-                binding.tvLuckyWinnerTextPrice.text = item.lucky_winner
+                binding.tvLuckyWinnerTextPrice.text = "₹" + item.lucky_winner
             }
             else{
                 binding.ivLuckyWinnerImagePrize.visibility = View.VISIBLE
@@ -89,8 +87,30 @@ class TicketCardSlideAdapter(private val lotteryModel: List<AllLotteryModel>) : 
                     .into(binding.ivLuckyWinnerImagePrize)
             }
 
-            binding.tvTicketAmount.text = item.first_prize
-            binding.tvSecondTicketAmount.text = item.second_prize
+            if (item.display_prize == "Text"){
+                binding.tvTicketAmount.visibility = View.VISIBLE
+                binding.tvTicketAmount.text = "₹" + item.first_prize
+            }
+            else{
+                binding.ivFirstPrize.visibility = View.VISIBLE
+                Glide.with(binding.ivFirstPrize.context)
+                    .load(item.first_prize)
+                    .apply(RequestOptions.placeholderOf(R.drawable.prize))
+                    .into(binding.ivFirstPrize)
+            }
+
+
+            if (item.display_prize == "Text"){
+                binding.tvSecondTicketAmount.visibility = View.VISIBLE
+                binding.tvSecondTicketAmount.text = "₹" + item.second_prize
+            }
+            else{
+                binding.ivsecondPrize.visibility = View.VISIBLE
+                Glide.with(binding.ivsecondPrize.context)
+                    .load(item.second_prize)
+                    .apply(RequestOptions.placeholderOf(R.drawable.prize))
+                    .into(binding.ivsecondPrize)
+            }
 
             binding.btnViewDetails.setOnClickListener { view ->
                 val context = view.context

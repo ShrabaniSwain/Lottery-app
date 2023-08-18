@@ -40,17 +40,36 @@ interface LotteryAPI {
     @GET("fetch_lottery_result.php")
     suspend fun getLotteryResult(): Response<LotteryResultResponse>
 
+    @GET("fetch_latest_ticket_marquee.php")
+    suspend fun getLotterySLiderResult(): Response<SLiderTicketResponse>
+
     @GET("fetch_lottery_result_by_customer.php")
     suspend fun getOlderTicketResult(@Query("customer_id") customerId: String): Response<OlderTicketResponse>
 
+    @GET("fetch_lottery_result_win_by_customer.php")
+    suspend fun getWinResult(@Query("customer_id") customerId: String): Response<OlderTicketResponse>
+
+    @GET("fetch_latest_ticket_by_customer.php")
+    suspend fun getLatestTicketResult(@Query("customer_id") customerId: String): Response<LattestTicketResponse>
+
     @GET("fetch_wallet_history_by_customer.php")
     suspend fun getWalletHistoryResult(@Query("customer_id") customerId: String): Response<WalletHistoryResponse>
+    @GET("fetch_customer_bank_details.php")
+    suspend fun getUserBankDetailsResult(@Query("customer_id") customerId: String): Response<UserBankDetailsData>
 
     @GET("fetch_ticket_history_by_customer.php")
     suspend fun getTransactionHistoryResult(@Query("customer_id") customerId: String): Response<TransactionHistoryResponse>
 
+    @GET("fetch_customer_image.php")
+    suspend fun getProfilePic(@Query("customer_id") customerId: String): Response<ProfileImageResponse>
+
     @GET("fetch_admin_phone.php")
     suspend fun getSupport(): Response<SupportResponseBody>
+    @GET("bank_details.php")
+    suspend fun getBankDetails(): Response<BankDetailsResponse>
+
+    @GET("fetch_minimum_withdrawl.php")
+    suspend fun getminimumWithdrawAmount(): Response<WithdrawAMountResponse>
 
     @POST("add_customer.php")
     fun addCustomer(
@@ -104,6 +123,14 @@ interface LotteryAPI {
         @Part("description") description: RequestBody
     ): Call<WalletRechargeResponse>
 
+
+    @Multipart
+    @POST("update_profile_image.php")
+    fun profileImage(
+        @Part("customer_id") customerId: RequestBody,
+        @Part profile_image: MultipartBody.Part,
+    ): Call<WalletRechargeResponse>
+
     @Multipart
     @POST("withdrawl_request.php")
     fun withdrawRequest(
@@ -118,4 +145,9 @@ interface LotteryAPI {
     fun buyLottery(
         @Body buyLottery: BuyLottery,
     ): Call<BuyLotteryResponse>
+
+    @POST("add_customer_bank_details.php")
+    fun addBankDeatils(
+        @Body addBankDetailsData: AddBankDetailsData,
+    ): Call<AddBankDetailsResponse>
 }

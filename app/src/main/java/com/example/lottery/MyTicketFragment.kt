@@ -8,17 +8,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.DatePicker
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.lottery.databinding.FragmentMyTicketBinding
 import kotlinx.coroutines.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MyTicketFragment : Fragment() {
 
     private lateinit var binding: FragmentMyTicketBinding
-    private lateinit var latestTickets: List<OlderTicketModel>
-    private lateinit var oldTickets: List<OlderTicketModel>
+    private  var latestTickets: ArrayList<LattestTicketModel> = arrayListOf()
+    private  var oldTickets: ArrayList<OlderTicketModel> = arrayListOf()
+    private var todayFormattedDate = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,8 +40,8 @@ class MyTicketFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        latestTickets = emptyList()
-        oldTickets = emptyList()
+        val todayDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+        todayFormattedDate = todayDateFormat.format(Date())
 
         GlobalScope.launch(Dispatchers.Main) {
             val response = withContext(Dispatchers.IO) {
@@ -47,7 +50,9 @@ class MyTicketFragment : Fragment() {
 
             if (response.isSuccessful) {
                 val lotteryResponse = response.body()
-                lotteryResponse?.let { handleOlderTicketResponse(it.result) }
+                lotteryResponse?.let { handleOlderTicketResponse(it.result)
+                oldTickets.addAll(it.result)
+                }
             } else {
                 Log.i("TAG", "API Call failed with error code: ${response.code()}")
             }
@@ -55,18 +60,26 @@ class MyTicketFragment : Fragment() {
 
         GlobalScope.launch(Dispatchers.Main) {
             val response = withContext(Dispatchers.IO) {
-                RetrofitClient.api.getOlderTicketResult(Constants.customer_id)
+                RetrofitClient.api.getLatestTicketResult(Constants.customer_id)
             }
 
             if (response.isSuccessful) {
                 val lotteryResponse = response.body()
-                lotteryResponse?.let { handleLatestResponse(it.result) }
+                if (lotteryResponse == null){
+                    binding.tvnoData.visibility = View.VISIBLE
+                }
+                lotteryResponse?.let {
+                    handleLatestResponse(it.result)
+                    latestTickets.addAll(it.result)
+                    updateTickets()
+                    Log.i("TAG", "API Call: ${it.result}")
+
+                }
             } else {
-                Log.i("TAG", "API Call failed with error code: ${response.code()}")
+                Log.i("TAG", "API Call failed with error code: ${response}")
             }
         }
 
-        updateDateText(System.currentTimeMillis())
         binding.tvDatePicker.setOnClickListener {
             showDatePickerDialog()
         }
@@ -108,27 +121,49 @@ class MyTicketFragment : Fragment() {
 
             val formattedSelectedDate = formatDateForComparison(selectedDate)
 
-            val filteredLatestTickets = latestTickets.filter {
-                "04 August 2023" == formattedSelectedDate
-            }
             val filteredOldTickets = oldTickets.filter { ticket ->
-                ticket.play_date == formattedSelectedDate
+                val ticketDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val playDate = ticketDateFormat.parse(ticket.play_date)
+                val formattedPlayDate = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(
+                    playDate!!
+                )
+                formattedPlayDate == formattedSelectedDate
+            }
+            handleOlderTicketResponse(filteredOldTickets)
+
+            if (filteredOldTickets.isEmpty()) {
+                binding.tvNoOldData.visibility = View.VISIBLE
+            } else {
+                binding.tvNoOldData.visibility = View.GONE
+            }
+
+            val filteredLatestTickets = latestTickets.filter { ticket ->
+                val ticketDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val playDate1 = ticketDateFormat.parse(ticket.play_date)
+                val formattedPlayDate1 = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(playDate1!!)
+                formattedPlayDate1 == formattedSelectedDate
             }
 
             handleLatestResponse(filteredLatestTickets)
-            handleOlderTicketResponse(filteredOldTickets)
 
-//            // Show a text message if no matching tickets found
-//            if (filteredLatestTickets.isEmpty() && filteredOldTickets.isEmpty()) {
-//                binding.tvNoMatchingTickets.visibility = View.VISIBLE
-//            } else {
-//                binding.tvNoMatchingTickets.visibility = View.GONE
+            if (filteredLatestTickets.isEmpty()) {
+                binding.tvnoData.visibility = View.VISIBLE
+            } else {
+                binding.tvnoData.visibility = View.GONE
+            }
+
+//            val oldTicketsWithoutToday = filteredOldTickets.filterNot { ticket ->
+//                val ticketDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+//                val playDate = ticketDateFormat.parse(ticket.play_date)
+//                val formattedPlayDate = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(playDate)
+//                formattedPlayDate == todayFormattedDate
 //            }
+//            handleOlderTicketResponse(oldTicketsWithoutToday)
+
         }
     }
 
-    private fun handleLatestResponse(result: List<OlderTicketModel>) {
-        latestTickets = result
+    private fun handleLatestResponse(result: List<LattestTicketModel>) {
         val latestTicketCardAdapter = LatestTicketCardAdapter(result)
         binding.rvLatestTicket.adapter = latestTicketCardAdapter
         binding.rvLatestTicket.layoutManager =
@@ -147,5 +182,24 @@ class MyTicketFragment : Fragment() {
         val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         val parsedDate = inputFormat.parse(date)
         return outputFormat.format(parsedDate!!)
+    }
+
+    private fun updateTickets() {
+        val filteredLatestTickets = latestTickets.filter { ticket ->
+            val ticketDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val playDate = ticketDateFormat.parse(ticket.play_date)
+            val formattedPlayDate = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(playDate)
+            Constants.notificationTitle= formattedPlayDate
+            formattedPlayDate == todayFormattedDate
+        }
+
+        handleLatestResponse(filteredLatestTickets)
+
+        if (filteredLatestTickets.isEmpty()) {
+            binding.tvnoData.visibility = View.VISIBLE
+        } else {
+            binding.tvnoData.visibility = View.GONE
+        }
+
     }
 }

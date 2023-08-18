@@ -12,7 +12,7 @@ import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LatestTicketCardAdapter(private val latestTicket: List<OlderTicketModel>) : RecyclerView.Adapter<LatestTicketCardAdapter.CardViewHolder>() {
+class LatestTicketCardAdapter(private val latestTicket: List<LattestTicketModel>) : RecyclerView.Adapter<LatestTicketCardAdapter.CardViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.latest_ticket_cards, parent, false)
@@ -43,8 +43,8 @@ class LatestTicketCardAdapter(private val latestTicket: List<OlderTicketModel>) 
             return playTime // Return the original input in case of any error
         }
 
-        fun bind(item: OlderTicketModel) {
-            val originalText = binding.tvLotteryBlurNumber.text.toString()
+        fun bind(item: LattestTicketModel) {
+            val originalText = item.lottery_number
             binding.tvLotteryBlurNumber.text = originalText
             binding.tvLotteryName.text = item.brand_name
             binding.tvLatestTicketDate.text = item.play_date

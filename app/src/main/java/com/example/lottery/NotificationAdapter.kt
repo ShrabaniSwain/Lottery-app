@@ -35,6 +35,7 @@ class NotificationAdapter(private val notificationData: List<NotificationData>) 
                 val intent = Intent(binding.root.context, NotificationDetailsActivity::class.java).apply {
                     putExtra("notification_name", item.notification_name)
                     putExtra("notification_details", item.notification_details)
+                    putExtra("notification_image", item.notification_image)
                 }
                 binding.root.context.startActivity(intent)
             }

@@ -14,6 +14,8 @@ import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.lottery.databinding.ActivityMainBinding
 import com.example.lottery.databinding.HeaderLayoutBinding
 import kotlinx.coroutines.*
@@ -30,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     private val winFragment:Fragment = WinFragment()
     private val historyFragment:Fragment = HistoryFragment()
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -150,6 +153,29 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.menuButton.setOnClickListener{
             binding.drawerLayout.openDrawer(GravityCompat.START)
         }
+
+        GlobalScope.launch(Dispatchers.Main) {
+            val response = withContext(Dispatchers.IO) {
+                RetrofitClient.api.getProfilePic(Constants.customer_id)
+            }
+
+            if (response.isSuccessful) {
+                val aboutResponse = response.body()
+                aboutResponse?.let { handleProfilePicResponse(it.result) }
+            } else {
+                Log.i("TAG", "API Call failed with error code: ${response.code()}")
+            }
+        }
+    }
+
+    private fun handleProfilePicResponse(result: List<ProfileImageModel>) {
+        if (result.isNotEmpty()) {
+            val aboutPage = result[0]
+            Glide.with(headerBinding.profileImageView.context)
+                .load(aboutPage.profile_image)
+                .apply(RequestOptions.placeholderOf(R.drawable.prize))
+                .into(headerBinding.profileImageView)
+        }
     }
 
     private fun fetchWalletBalance(customerId: String) {
@@ -175,7 +201,7 @@ class MainActivity : AppCompatActivity() {
         if (result.isNotEmpty()) {
             val aboutPage = result[0]
             val walletBalance = aboutPage.wallet_balance ?: "0"
-            val formattedWalletBalance = "Rs. $walletBalance"
+            val formattedWalletBalance = "₹ $walletBalance"
             binding.toolbar.tvWalletBalance.text = formattedWalletBalance
             Constants.WalletBalance = walletBalance
         }

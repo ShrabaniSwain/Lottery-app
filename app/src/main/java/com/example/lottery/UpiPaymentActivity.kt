@@ -1,7 +1,10 @@
 package com.example.lottery
 
+import android.Manifest
 import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.app.Activity
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,8 +17,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.lottery.databinding.ActivityUpiPaymentBinding
+import kotlinx.coroutines.*
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -32,6 +39,7 @@ class UpiPaymentActivity : AppCompatActivity() {
     private val FILE_REQUEST_CODE = 100
     private lateinit var imageUri: Uri
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUpiPaymentBinding.inflate(layoutInflater)
@@ -40,6 +48,26 @@ class UpiPaymentActivity : AppCompatActivity() {
         binding.ivBack.setOnClickListener {
             onBackPressed()
         }
+
+        binding.ivCopyUpiIdNo.setOnClickListener {
+            val tvUpiIdNo = binding.tvUpiIdNo.text.toString()
+            copyTextToClipboard(tvUpiIdNo)
+        }
+
+        binding.ivCopyGpayNo.setOnClickListener {
+            val tvGpayNo = binding.tvGpayNo.text.toString()
+            copyTextToClipboard(tvGpayNo)
+        }
+        binding.ivCopyPaytmNo.setOnClickListener {
+            val tvPaytmUpiNo = binding.tvPaytmUpiNo.text.toString()
+            copyTextToClipboard(tvPaytmUpiNo)
+        }
+
+        binding.ivCopyPhonePeNo.setOnClickListener {
+            val tvPhonePeNo = binding.tvPhonePeNo.text.toString()
+            copyTextToClipboard(tvPhonePeNo)
+        }
+
 
         binding.ivCamera.setOnClickListener {
             openGallery()
@@ -65,6 +93,59 @@ class UpiPaymentActivity : AppCompatActivity() {
                 }
             }
         }
+
+        GlobalScope.launch(Dispatchers.Main) {
+            val response = withContext(Dispatchers.IO) {
+                RetrofitClient.api.getBankDetails()
+            }
+
+            if (response.isSuccessful) {
+                val aboutResponse = response.body()
+                aboutResponse?.let { handleBankDetailsResponse(it.result) }
+            } else {
+                Log.i("TAG", "API Call failed with error code: ${response.code()}")
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            READ_EXTERNAL_STORAGE_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // Permission granted, proceed to open the gallery
+                    openGallery()
+                } else {
+                    // Permission denied, show a message or take appropriate action
+                    Toast.makeText(this, "Permission denied. To use this feature, please grant the permission in App Settings.", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun handleBankDetailsResponse(result: List<BankDetailsModel>) {
+        if (result.isNotEmpty()) {
+            val aboutPage = result[0]
+            binding.tvUpiIdNo.text = aboutPage.upi_id
+            binding.tvGpayNo.text = aboutPage.gpay_number
+            binding.tvPhonePeNo.text = aboutPage.phonepe_number
+            binding.tvPaytmUpiNo.text = aboutPage.paytm_number
+            binding.tvBankName.text = aboutPage.bank_name
+            binding.tvAccountName.text = aboutPage.ac_name
+            binding.tvAccNo.text = aboutPage.ac_number
+            binding.tvIfscCode.text = aboutPage.ifsc_code
+            binding.tvBranchName.text = aboutPage.branch_name
+            binding.tvType.text = aboutPage.account_type
+            Glide.with(binding.ivScanCode.context)
+                .load(aboutPage.qr_code)
+                .apply(RequestOptions.placeholderOf(R.drawable.prize))
+                .into(binding.ivScanCode)
+
+        }
     }
 
     fun formatDateToDesiredFormat(date: Date): String {
@@ -73,15 +154,16 @@ class UpiPaymentActivity : AppCompatActivity() {
     }
     private val READ_EXTERNAL_STORAGE_REQUEST_CODE = 123
     private fun openGallery() {
+        // Check if permission is not granted
         if (ContextCompat.checkSelfPermission(
                 this,
-                READ_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // Permission is not granted, request the permission
+            // Request the permission
             ActivityCompat.requestPermissions(
                 this,
-                arrayOf(READ_EXTERNAL_STORAGE),
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
                 READ_EXTERNAL_STORAGE_REQUEST_CODE
             )
         } else {
@@ -89,6 +171,7 @@ class UpiPaymentActivity : AppCompatActivity() {
             val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(galleryIntent, FILE_REQUEST_CODE)
         }
+
     }
 
     @Deprecated("Deprecated in Java")
@@ -164,5 +247,14 @@ class UpiPaymentActivity : AppCompatActivity() {
         })
 
     }
+
+    private fun copyTextToClipboard(text: String) {
+        Log.d("CopyButton", "Copying text: $text")
+        val clipboard = applicationContext.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = android.content.ClipData.newPlainText("Copied Text", text)
+        clipboard.setPrimaryClip(clip)
+        Toast.makeText(applicationContext, "Text copied", Toast.LENGTH_SHORT).show()
+    }
+
 
 }

@@ -9,10 +9,14 @@ import com.bumptech.glide.Glide
 import com.example.lottery.databinding.FirstWinnerTicketnoBinding
 import com.example.lottery.databinding.WinTicketCardBinding
 
-class WInTicketAdapter(private val lotteryResult: List<LotteryResult>) : RecyclerView.Adapter<WInTicketAdapter.CardViewHolder>() {
+class WInTicketAdapter(private val lotteryResult: List<OlderTicketModel>) : RecyclerView.Adapter<WInTicketAdapter.CardViewHolder>() {
 
     private val firstPrizeNumbers =
         lotteryResult.filter { it.prize_position == "1st" }.map { it.lottery_number }
+    private val firstPrize =
+        lotteryResult.filter { it.prize_position == "1st" }.map { it.prize }
+    private val firstPrizeType =
+        lotteryResult.filter { it.prize_position == "1st" }.map { it.prize_type }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -30,11 +34,27 @@ class WInTicketAdapter(private val lotteryResult: List<LotteryResult>) : Recycle
     }
 
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val binding = FirstWinnerTicketnoBinding.bind(itemView)
+        private val binding = WinTicketCardBinding.bind(itemView)
 
-        fun bind(item: LotteryResult) {
+        fun bind(item: OlderTicketModel) {
             val firstPrizeNumber = firstPrizeNumbers[adapterPosition]
+            val firstPrize = firstPrize[adapterPosition]
+            val formattedfirstPrizeBalance = "₹ $firstPrize"
+
+            val firstPrizeType = firstPrizeType[adapterPosition]
             binding.tvFirstWinnerNo.text = firstPrizeNumber
+
+            if (firstPrizeType == "File"){
+                binding.ivFIrstPrize.visibility = View.VISIBLE
+                Glide.with(binding.ivFIrstPrize.context)
+                    .load(firstPrize)
+                    .into(binding.ivFIrstPrize)
+            }
+            else{
+                binding.tvFirstWinnerAmount.visibility = View.VISIBLE
+                binding.ivFIrstPrize.visibility = View.GONE
+                binding.tvFirstWinnerAmount.text = formattedfirstPrizeBalance
+            }
         }
     }
 }

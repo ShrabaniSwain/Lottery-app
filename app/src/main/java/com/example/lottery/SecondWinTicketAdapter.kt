@@ -4,12 +4,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.lottery.databinding.SecondWinTicketBinding
 
-class SecondWinTicketAdapter(private val lotteryResult: List<LotteryResult>) : RecyclerView.Adapter<SecondWinTicketAdapter.CardViewHolder>() {
+class SecondWinTicketAdapter(private val lotteryResult: List<OlderTicketModel>) : RecyclerView.Adapter<SecondWinTicketAdapter.CardViewHolder>() {
 
     private val firstPrizeNumbers =
         lotteryResult.filter { it.prize_position == "2nd" }.map { it.lottery_number }
+    private val secondPrize =
+        lotteryResult.filter { it.prize_position == "2nd" }.map { it.prize }
+    private val secondPrizeType =
+        lotteryResult.filter { it.prize_position == "2nd" }.map { it.prize_type }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -29,9 +34,26 @@ class SecondWinTicketAdapter(private val lotteryResult: List<LotteryResult>) : R
     inner class CardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val binding = SecondWinTicketBinding.bind(itemView)
 
-        fun bind(item: LotteryResult) {
+        fun bind(item: OlderTicketModel) {
             val firstPrizeNumber = firstPrizeNumbers[adapterPosition]
             binding.tvFirstWinnerNo.text = firstPrizeNumber
+
+            val secondPrize = secondPrize[adapterPosition]
+            val formattedSecondPrizeBalance = "₹ $secondPrize"
+
+            val secondPrizeType = secondPrizeType[adapterPosition]
+
+            if (secondPrizeType == "File"){
+                binding.ivFIrstPrize.visibility = View.VISIBLE
+                Glide.with(binding.ivFIrstPrize.context)
+                    .load(secondPrize)
+                    .into(binding.ivFIrstPrize)
+            }
+            else{
+                binding.tvFirstWinnerAmount.visibility = View.VISIBLE
+                binding.ivFIrstPrize.visibility = View.GONE
+                binding.tvFirstWinnerAmount.text = formattedSecondPrizeBalance
+            }
         }
     }
 }

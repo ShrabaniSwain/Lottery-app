@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.text.Html
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -25,7 +26,10 @@ import java.lang.Runnable
 import android.text.format.DateFormat
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import java.io.BufferedInputStream
@@ -39,6 +43,9 @@ class HomeFragment : Fragment(), OtherBrandAdapterCallback {
 
     private lateinit var binding: FragmentHomeBinding
     private var selectedBrandIndex: Int = 0
+    private  var lotteryResult: ArrayList<LotteryResult> = arrayListOf()
+    private var todayFormattedDate = ""
+    private var currentItem = 0
 
     private val bannerImages = listOf(
         R.drawable.bannerimage,
@@ -63,6 +70,8 @@ class HomeFragment : Fragment(), OtherBrandAdapterCallback {
     @OptIn(DelicateCoroutinesApi::class)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val todayDateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+        todayFormattedDate = todayDateFormat.format(Date())
         updateUI()
 
         binding.btnDownload.setOnClickListener {
@@ -75,9 +84,6 @@ class HomeFragment : Fragment(), OtherBrandAdapterCallback {
             showDatePickerDialog()
         }
 
-        binding.tvTimePicker.setOnClickListener {
-            showTimePickerDialog()
-        }
         val calendar = Calendar.getInstance()
         val currentHourOfDay = calendar.get(Calendar.HOUR_OF_DAY)
         val currentMinute = calendar.get(Calendar.MINUTE)
@@ -128,7 +134,11 @@ class HomeFragment : Fragment(), OtherBrandAdapterCallback {
 
             if (response.isSuccessful) {
                 val lotteryResponse = response.body()
-                lotteryResponse?.let { handleLotteryResultResponse(it.result) }
+                lotteryResponse?.let { handleLotteryResultResponse(it.result)
+                    lotteryResult.clear()
+                    lotteryResult.addAll(it.result)
+                    updateTickets()
+                }
             } else {
                 Log.i("TAG", "API Call failed with error code: ${response.code()}")
             }
@@ -146,8 +156,90 @@ class HomeFragment : Fragment(), OtherBrandAdapterCallback {
                 Log.i("TAG", "API Call failed with error code: ${response.code()}")
             }
         }
+
+        GlobalScope.launch(Dispatchers.Main) {
+            val response = withContext(Dispatchers.IO) {
+                RetrofitClient.api.getLotterySLiderResult()
+            }
+
+            if (response.isSuccessful) {
+                val lotteryResponse = response.body()
+                lotteryResponse?.let { handleSlideLotteryResultResponse(it.result)
+                }
+            } else {
+                Log.i("TAG", "API Call failed with error code: ${response.code()}")
+            }
+        }
     }
 
+    private fun handleSlideLotteryResultResponse(result: List<SLiderTicket>) {
+        val adapter1 = SliderTicketAdapter(result)
+        binding.rvTicketSlider.adapter = adapter1
+        binding.rvTicketSlider.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        startAutoScroll(binding.rvTicketSlider, adapter1, result.size)
+    }
+
+    private fun startAutoScroll(recyclerView: RecyclerView, adapter: SliderTicketAdapter, totalItems: Int) {
+        val handler = Handler()
+        val scrollDelay = 3000L // Time in milliseconds between scrolling to the next item
+
+        val runnable = object : Runnable {
+            override fun run() {
+                val currentVisibleItem = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+
+                // Scroll to the next item
+                val nextItem = (currentVisibleItem + 1) % totalItems
+                val smoothScroller = LinearSmoothScroller(recyclerView.context)
+                smoothScroller.targetPosition = nextItem
+                recyclerView.layoutManager?.startSmoothScroll(smoothScroller)
+
+                // Repeat the runnable after the delay
+                handler.postDelayed(this, scrollDelay)
+            }
+        }
+
+        // Start the initial auto-scrolling
+        handler.postDelayed(runnable, scrollDelay)
+    }
+
+
+
+
+
+    inner class DatePickerListener : DatePickerDialog.OnDateSetListener {
+        override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+            val selectedDate = formatDate(year, month, dayOfMonth)
+            binding.tvDatePicker.text = selectedDate
+
+            val formattedSelectedDate = formatDateForComparison(selectedDate)
+
+            val filteredOldTickets = lotteryResult.filter { ticket ->
+                val ticketDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                val playDate = ticketDateFormat.parse(ticket.play_date)
+                val formattedPlayDate = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(playDate)
+                formattedPlayDate == formattedSelectedDate
+            }
+            handleLotteryResultResponse(filteredOldTickets)
+
+            if (filteredOldTickets.isEmpty()) {
+                binding.tvNodDataSecond.visibility = View.VISIBLE
+                binding.tvNodDataFirst.visibility = View.VISIBLE
+                binding.tvNodDataThird.visibility = View.VISIBLE
+            } else {
+                binding.tvNodDataSecond.visibility = View.GONE
+                binding.tvNodDataFirst.visibility = View.GONE
+                binding.tvNodDataThird.visibility = View.GONE
+            }
+
+        }
+    }
+
+    private fun formatDateForComparison(date: String): String {
+        val inputFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
+        val parsedDate = inputFormat.parse(date)
+        return outputFormat.format(parsedDate!!)
+    }
     private fun handleOtherBrandResponse(result: List<OtherResultsData>) {
         buttonDataList.clear()
         buttonDataList.addAll(result)
@@ -186,7 +278,6 @@ class HomeFragment : Fragment(), OtherBrandAdapterCallback {
         calendar.set(Calendar.MINUTE, minute)
 
         val selectedTime = SimpleDateFormat(timeFormat, Locale.getDefault()).format(calendar.time)
-        binding.tvTimePicker.text = selectedTime
     }
 
 
@@ -210,7 +301,6 @@ class HomeFragment : Fragment(), OtherBrandAdapterCallback {
     private fun updateDateText(timestamp: Long) {
         val dateFormat = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault())
         val formattedDate = dateFormat.format(Date(timestamp))
-        binding.tvDatePicker.text = formattedDate
     }
 
     private fun formatDate(year: Int, month: Int, dayOfMonth: Int): String {
@@ -221,33 +311,72 @@ class HomeFragment : Fragment(), OtherBrandAdapterCallback {
         return dateFormat.format(calendar.time)
     }
 
-    inner class DatePickerListener : DatePickerDialog.OnDateSetListener {
-        override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-            val selectedDate = formatDate(year, month, dayOfMonth)
-            binding.tvDatePicker.text = selectedDate
-        }
-    }
     private fun handleLotteryResultResponse(result: List<LotteryResult>) {
         val adapter = FirstwinnerTicketNoAdapter(result)
         binding.rvFirstWinnerTicket.adapter = adapter
         binding.rvFirstWinnerTicket.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-
-        val firstWinnerPrizeAmount = result.find { it.prize_position == "1st" }?.prize
-        binding.tvFirstPrizeAmount.text = firstWinnerPrizeAmount.toString()
+//
+//        val firstWinnerPrizeAmount = result.find { it.prize_position == "1st" }?.prize
+//        val firstWinnerPrizeType = result.find { it.prize_position == "1st" }?.prize_type
+//        val firstPrize = firstWinnerPrizeAmount?.toString() ?: "0"
+//        val firstPrizeImage = firstWinnerPrizeAmount
+//        val formattedfirstPrizeBalance = "₹ $firstPrize"
+//
+//        if (firstWinnerPrizeType == "File"){
+//            binding.ivFirstPrize.visibility = View.VISIBLE
+//            Glide.with(binding.ivFirstPrize.context)
+//                .load(firstPrizeImage)
+//                .into(binding.ivFirstPrize)
+//        }
+//        else{
+//            binding.tvFirstPrizeAmount.visibility = View.VISIBLE
+//            binding.ivFirstPrize.visibility = View.GONE
+//            binding.tvFirstPrizeAmount.text = formattedfirstPrizeBalance
+//        }
 
         val secondWinnerAdapter = SecondWinnerAdapter(result)
         binding.rvSecondWinnerTicket.adapter = secondWinnerAdapter
         binding.rvSecondWinnerTicket.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        val secondWinnerPrizeAmount = result.find { it.prize_position == "2nd" }?.prize
-        binding.tvSecondPrizeAmount.text = secondWinnerPrizeAmount.toString()
+//        val secondWinnerPrizeAmount = result.find { it.prize_position == "2nd" }?.prize
+//        val secondWinnerPrizeType = result.find { it.prize_position == "2nd" }?.prize_type
+//        val secondPrize = secondWinnerPrizeAmount?.toString() ?: "0"
+//        val secondPrizeImage = secondWinnerPrizeAmount
+//        val formattedsecondPrizeBalance = "₹ $secondPrize"
+//
+//        if (secondWinnerPrizeType == "File"){
+//            binding.ivSecondPrize.visibility = View.VISIBLE
+//            Glide.with(binding.ivSecondPrize.context)
+//                .load(secondPrizeImage)
+//                .into(binding.ivSecondPrize)
+//        }
+//        else{
+//            binding.tvSecondPrizeAmount.visibility = View.VISIBLE
+//            binding.ivSecondPrize.visibility = View.GONE
+//            binding.tvSecondPrizeAmount.text = formattedsecondPrizeBalance
+//        }
 
         val luckyWinnerAdapter = LuckyWinnerAdapter(result)
         binding.rvLuckyWinnerTicket.adapter = luckyWinnerAdapter
         binding.rvLuckyWinnerTicket.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        val luckyWinnerPrizeAmount = result.find { it.prize_position == "Lucky Winner" }?.prize
-        binding.tvLuckyWinnerTextPrize.text = luckyWinnerPrizeAmount.toString()
+//        val luckyWinnerPrizeAmount = result.find { it.prize_position == "Lucky Winner" }?.prize
+//        val luckyWinnerPrizeType = result.find { it.prize_position == "Lucky Winner" }?.prize_type
+//        val thirdPrize = luckyWinnerPrizeAmount?.toString() ?: "0"
+//        val winnerPrizeImage = luckyWinnerPrizeAmount
+//        val formattedthirdPrizeBalance = "₹ $thirdPrize"
+//
+//        if (luckyWinnerPrizeType == "File"){
+//            binding.tvLuckyWinnerPrize.visibility = View.VISIBLE
+//            Glide.with(binding.tvLuckyWinnerPrize.context)
+//                .load(winnerPrizeImage)
+//                .into(binding.tvLuckyWinnerPrize)
+//        }
+//        else{
+//            binding.tvLuckyWinnerTextPrize.visibility = View.VISIBLE
+//            binding.tvLuckyWinnerPrize.visibility = View.GONE
+//            binding.tvLuckyWinnerTextPrize.text = formattedthirdPrizeBalance
+//        }
     }
 
     private fun handleAllLotteryResponse(result: List<AllLotteryModel>) {
@@ -259,7 +388,10 @@ class HomeFragment : Fragment(), OtherBrandAdapterCallback {
     private fun handleNoticeResponse(result: List<NoticeModel>) {
         if (result.isNotEmpty()) {
             val aboutPage = result[0]
-            binding.tvNoticeDetails.text = aboutPage.notice_details
+            val htmlText = aboutPage.notice_details
+            val cleanText = Html.fromHtml(htmlText).toString()
+
+            binding.tvNoticeDetails.text = cleanText
         }
     }
 
@@ -352,5 +484,26 @@ class HomeFragment : Fragment(), OtherBrandAdapterCallback {
         // For simplicity, we won't add it here, but it can be added for a better user experience.
     }
 
+    private fun updateTickets() {
+        val filteredLatestTickets = lotteryResult.filter { ticket ->
+            val ticketDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val playDate = ticketDateFormat.parse(ticket.play_date)
+            val formattedPlayDate = SimpleDateFormat("dd MMMM yyyy", Locale.getDefault()).format(playDate)
+            formattedPlayDate == todayFormattedDate
+        }
+
+        handleLotteryResultResponse(filteredLatestTickets)
+
+        if (filteredLatestTickets.isEmpty()) {
+            binding.tvNodDataFirst.visibility = View.VISIBLE
+            binding.tvNodDataSecond.visibility = View.VISIBLE
+            binding.tvNodDataThird.visibility = View.VISIBLE
+        } else {
+            binding.tvNodDataFirst.visibility = View.GONE
+            binding.tvNodDataSecond.visibility = View.GONE
+            binding.tvNodDataThird.visibility = View.GONE
+        }
+
+    }
 
 }
