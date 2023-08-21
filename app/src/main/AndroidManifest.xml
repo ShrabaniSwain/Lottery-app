@@ -52,7 +52,7 @@
             android:name=".ContactUsActivity"
             android:exported="false" />
         <activity
-            android:name=".AboutUsActivity"
+            android:name="com.lakhpati.lottery.AboutUsActivity"
             android:exported="false" />
         <activity
             android:name=".ResetMpinNumberACtivity"

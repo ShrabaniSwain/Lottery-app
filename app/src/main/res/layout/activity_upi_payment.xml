@@ -74,7 +74,6 @@
         android:id="@+id/ivScanCode"
         android:layout_width="300dp"
         android:layout_height="250dp"
-        android:src="@drawable/scancode"
         app:layout_constraintTop_toBottomOf="@id/tvUpiIdNo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
