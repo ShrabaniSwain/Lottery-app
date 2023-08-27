@@ -43,7 +43,6 @@ class OtherBrandAdapter(
 
                 Glide.with(binding.ivBrandLogo.context)
                     .load(buttonData.brand_logo)
-                    .apply(RequestOptions.placeholderOf(R.drawable.prize))
                     .into(binding.ivBrandLogo)
                 root.setOnClickListener {
                     selectedBrandIndex = position // Update the selectedBrandIndex

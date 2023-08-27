@@ -11,5 +11,5 @@ object Constants {
     var WalletBalance = ""
     var LuckyPrizeAmount = ""
     var notificationTitle = ""
-    var REFER_URL = "https://play.google.com/store/games?pli=1"
+    var REFER_URL = "https://play.google.com/store/apps/details?id=com.lakhpati.lottery&pli=1"
 }

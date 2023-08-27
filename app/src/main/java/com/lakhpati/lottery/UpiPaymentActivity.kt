@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -154,21 +155,45 @@ class UpiPaymentActivity : AppCompatActivity() {
     private val READ_EXTERNAL_STORAGE_REQUEST_CODE = 123
     private fun openGallery() {
         // Check if permission is not granted
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Request the permission
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                READ_EXTERNAL_STORAGE_REQUEST_CODE
-            )
-        } else {
-            // Permission is already granted, open the gallery
-            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-            startActivityForResult(galleryIntent, FILE_REQUEST_CODE)
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 ){
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // Request the permission
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    READ_EXTERNAL_STORAGE_REQUEST_CODE
+                )
+            }
+            else {
+                // Permission is already granted, open the gallery
+                val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                startActivityForResult(galleryIntent, FILE_REQUEST_CODE)
+            }
+        }
+        else{
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_MEDIA_IMAGES
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // Request the permission
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                    READ_EXTERNAL_STORAGE_REQUEST_CODE
+                )
+            }
+
+            else {
+                // Permission is already granted, open the gallery
+                val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                startActivityForResult(galleryIntent, FILE_REQUEST_CODE)
+            }
+
         }
 
     }

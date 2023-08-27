@@ -35,7 +35,6 @@ class SliderTicketAdapter(private val lotteryResult: List<SLiderTicket>) : Recyc
                 binding.ivSLiderImagePrize.visibility = View.VISIBLE
                 Glide.with(binding.ivSLiderImagePrize.context)
                     .load(item.prize)
-                    .apply(RequestOptions.placeholderOf(R.drawable.prize))
                     .into(binding.ivSLiderImagePrize)
             }
             else{

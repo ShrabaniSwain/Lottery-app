@@ -13,7 +13,7 @@ interface LotteryAPI {
     @GET("about_us.php")
     suspend fun getAboutPage(): Response<com.lakhpati.lottery.AboutResponse>
 
-    @GET("contact_us.php")
+    @GET("newpage.php")
     suspend fun getContactPage(): Response<ContactResponse>
 
     @GET("terms_condition.php")

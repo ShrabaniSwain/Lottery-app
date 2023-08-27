@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +17,7 @@ import android.util.Log
 import android.view.View
 import android.view.View.VISIBLE
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
@@ -169,24 +171,47 @@ class EditProfileActivity : AppCompatActivity() {
         }
         isHidden = !isHidden
     }
-
     private fun openGallery() {
         // Check if permission is not granted
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Request the permission
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                READ_EXTERNAL_STORAGE_REQUEST_CODE
-            )
-        } else {
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2 ){
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // Request the permission
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    READ_EXTERNAL_STORAGE_REQUEST_CODE
+                )
+            }
+            else {
+                // Permission is already granted, open the gallery
+                val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                startActivityForResult(galleryIntent, FILE_REQUEST_CODE)
+            }
+        }
+        else{
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.READ_MEDIA_IMAGES
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                // Request the permission
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(Manifest.permission.READ_MEDIA_IMAGES),
+                    READ_EXTERNAL_STORAGE_REQUEST_CODE
+                )
+            }
+
+            else {
             // Permission is already granted, open the gallery
             val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(galleryIntent, FILE_REQUEST_CODE)
+            }
+
         }
     }
 
@@ -231,7 +256,7 @@ class EditProfileActivity : AppCompatActivity() {
                 imageUri = it
                 Glide.with(this)
                     .load(imageUri)
-                    .apply(RequestOptions.placeholderOf(R.drawable.prize))
+                    .apply(RequestOptions.placeholderOf(R.drawable.profile))
                     .into(binding.ivEditProfileImage)
 
             }

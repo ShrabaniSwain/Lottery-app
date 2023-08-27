@@ -83,7 +83,6 @@ class TicketCardSlideAdapter(private val lotteryModel: List<AllLotteryModel>) : 
                 binding.ivLuckyWinnerImagePrize.visibility = View.VISIBLE
                 Glide.with(binding.ivLuckyWinnerImagePrize.context)
                     .load(item.lucky_winner)
-                    .apply(RequestOptions.placeholderOf(R.drawable.prize))
                     .into(binding.ivLuckyWinnerImagePrize)
             }
 
@@ -95,7 +94,6 @@ class TicketCardSlideAdapter(private val lotteryModel: List<AllLotteryModel>) : 
                 binding.ivFirstPrize.visibility = View.VISIBLE
                 Glide.with(binding.ivFirstPrize.context)
                     .load(item.first_prize)
-                    .apply(RequestOptions.placeholderOf(R.drawable.prize))
                     .into(binding.ivFirstPrize)
             }
 
@@ -108,7 +106,6 @@ class TicketCardSlideAdapter(private val lotteryModel: List<AllLotteryModel>) : 
                 binding.ivsecondPrize.visibility = View.VISIBLE
                 Glide.with(binding.ivsecondPrize.context)
                     .load(item.second_prize)
-                    .apply(RequestOptions.placeholderOf(R.drawable.prize))
                     .into(binding.ivsecondPrize)
             }
 

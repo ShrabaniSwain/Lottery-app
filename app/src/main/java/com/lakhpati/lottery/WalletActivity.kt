@@ -189,8 +189,8 @@ class WalletActivity : AppCompatActivity() {
                 val minimumWithdrawAmount = withdrawAmountResponse?.result?.firstOrNull()?.minimum_withdrawl_amount
                 val inputAmount = amount
 
-                if (minimumWithdrawAmount != null && inputAmount > minimumWithdrawAmount.toString()) {
-                    Toast.makeText(applicationContext, "Amount should be less than the wallet amount", Toast.LENGTH_SHORT).show()
+                if (minimumWithdrawAmount != null && inputAmount > minimumWithdrawAmount.toString() || inputAmount > Constants.WalletBalance) {
+                    Toast.makeText(applicationContext, "You don't have enough wallet balance", Toast.LENGTH_SHORT).show()
                 } else if (inputAmount.isEmpty() || inputAmount == "0") {
                     Toast.makeText(applicationContext, "Enter a valid withdrawal amount", Toast.LENGTH_SHORT).show()
                 }
